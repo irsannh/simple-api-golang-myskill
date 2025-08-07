@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"simple-api/auth"
 	"simple-api/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
 
@@ -199,7 +201,11 @@ func deleteHandler(ctx *gin.Context, db *gorm.DB) {
 }
 
 func setupRouter() *gin.Engine {
-	conn := "postgres://postgres:postgres@127.0.0.1/postgres?sslmode=disable"
+	errEnv := godotenv.Load(".env")
+	if errEnv != nil {
+		log.Fatal("Error Load Env")
+	}
+	conn := os.Getenv("POSTGRES_URL")
 	db, err := gorm.Open("postgres", conn)
 	if err != nil {
 		log.Fatal(err)
@@ -208,6 +214,12 @@ func setupRouter() *gin.Engine {
 	Migrate(db)
 
 	r := gin.Default()
+
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "Success",
+		})
+	})
 
 	r.POST("/login", auth.LoginHandler)
 
