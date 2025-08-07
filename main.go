@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"simple-api/auth"
+	"simple-api/middleware"
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -207,15 +209,17 @@ func setupRouter() *gin.Engine {
 
 	r := gin.Default()
 
+	r.POST("/login", auth.LoginHandler)
+
 	r.POST("/student", func(ctx *gin.Context) {
 		postHandler(ctx, db)
 	})
 
-	r.GET("/student", func(ctx *gin.Context) {
+	r.GET("/student", middleware.AuthValid, func(ctx *gin.Context) {
 		getAllHandler(ctx, db)
 	})
 
-	r.GET("/student/:student_id", func(ctx *gin.Context) {
+	r.GET("/student/:student_id", middleware.AuthValid, func(ctx *gin.Context) {
 		getHandler(ctx, db)
 	})
 
