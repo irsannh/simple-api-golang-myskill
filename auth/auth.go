@@ -38,7 +38,6 @@ func LoginHandler(ctx *gin.Context) {
 		Issuer: "Test",
 		IssuedAt: time.Now().Unix(),
 	}
-
 	sign := jwt.NewWithClaims(jwt.SigningMethodHS256, claim)
 	token, err := sign.SignedString([]byte(SECRET))
 	if err != nil {
@@ -52,6 +51,4 @@ func LoginHandler(ctx *gin.Context) {
 		"token": token,
 	})
 	}
-
-	
 }
