@@ -249,7 +249,7 @@ func setupRouter() *gin.Engine {
 func main() {
 	r := setupRouter()
 
-	r.Run("localhost:8080")
+	r.Run()
 }
 
 func Migrate(db *gorm.DB) {
